@@ -1,0 +1,44 @@
+==================== DIỄN GIẢI KẾT QUẢ ANOVA ====================
+
+--- A. CÁC YẾU TỐ CHÍNH (MAIN EFFECTS) ---
+
+Yếu tố: C(genre)
+P-value: 2.562e-93. >> Kết luận: CÓ ảnh hưởng đáng kể đến my_score.
+
+Yếu tố: C(gender)
+P-value: 0. >> Kết luận: CÓ ảnh hưởng đáng kể đến my_score.
+
+Yếu tố: C(source)
+P-value: 3.306e-50. >> Kết luận: CÓ ảnh hưởng đáng kể đến my_score.
+
+Yếu tố: popularity
+P-value: 0. >> Kết luận: CÓ ảnh hưởng đáng kể đến my_score.
+
+
+==================================================
+
+--- B. CÁC YẾU TỐ TƯƠNG TÁC (INTERACTION EFFECTS) ---
+
+Tương tác: C(genre):C(gender)
+P-value: 1.341e-25. >> KẾT LUẬN: CÓ sự tương tác đáng kể về mặt thống kê.
+   Ý nghĩa: Sở thích về thể loại (genre) thực sự khác nhau giữa Nam và Nữ.
+
+Tương tác: C(genre):C(source)
+P-value: 6.683e-75. >> KẾT LUẬN: CÓ sự tương tác đáng kể về mặt thống kê.
+   Ý nghĩa: Cách đánh giá một thể loại (genre) phụ thuộc vào nguồn gốc (source) của anime đó.
+
+Tương tác: C(gender):C(source)
+P-value: 1.682e-130. >> KẾT LUẬN: CÓ sự tương tác đáng kể về mặt thống kê.
+   Ý nghĩa: Nam và Nữ có xu hướng đánh giá khác nhau đối với các anime từ các nguồn gốc (source) khác nhau.
+
+Tương tác: C(genre):popularity
+P-value: 7.131e-36. >> KẾT LUẬN: CÓ sự tương tác đáng kể về mặt thống kê.
+   Ý nghĩa: Mối quan hệ giữa độ phổ biến và điểm số thay đổi tùy theo từng thể loại.
+
+Tương tác: C(gender):popularity
+P-value: 1.95e-37. >> KẾT LUẬN: CÓ sự tương tác đáng kể về mặt thống kê.
+   Ý nghĩa: Mối quan hệ giữa độ phổ biến và điểm số là khác nhau đối với Nam và Nữ.
+
+Tương tác: C(source):popularity
+P-value: 3.033e-31. >> KẾT LUẬN: CÓ sự tương tác đáng kể về mặt thống kê.
+   Ý nghĩa: Mối quan hệ giữa độ phổ biến và điểm số phụ thuộc vào nguồn gốc của anime.

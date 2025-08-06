@@ -1,0 +1,79 @@
+# ===================================================================
+# Python .gitignore
+# 
+# Thêm các file và thư mục không muốn đưa lên Git vào đây.
+# ===================================================================
+
+# 1. Thư mục môi trường ảo (Virtual Environments)
+# -------------------------------------------------------------------
+# Đây là thư mục người dùng yêu cầu.
+venv/
+env/
+.venv/
+__pypackages__/
+*.venv
+
+# 2. File mã byte đã biên dịch và cache
+# -------------------------------------------------------------------
+# Python tự động tạo ra các file này để chạy nhanh hơn.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 3. File và thư mục của các trình soạn thảo code (IDE)
+# -------------------------------------------------------------------
+# Mỗi người dùng có thể có cấu hình riêng, không nên commit lên.
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# 4. Các file bí mật và cấu hình cục bộ (Rất quan trọng!)
+# -------------------------------------------------------------------
+# Không bao giờ đưa các file chứa mật khẩu, API key lên Git.
+.env
+.env.*
+secrets.ini
+secrets.json
+config.py  # Nếu file này chứa thông tin nhạy cảm
+
+# 5. Thư mục phân phối và build
+# -------------------------------------------------------------------
+# Các file này được tạo ra khi bạn đóng gói dự án.
+build/
+dist/
+*.egg-info/
+wheels/
+sdist/
+.eggs/
+
+# 6. Các file log
+# -------------------------------------------------------------------
+*.log
+logs/
+
+# 7. File hệ thống của hệ điều hành
+# -------------------------------------------------------------------
+.DS_Store    # macOS
+Thumbs.db    # Windows
+
+# 8. File và thư mục liên quan đến kiểm thử (Testing)
+# -------------------------------------------------------------------
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+
+# 9. Jupyter Notebook Checkpoints
+# -------------------------------------------------------------------
+.ipynb_checkpoints/
+
+# 10. Các file dữ liệu lớn (Tùy chọn)
+# -------------------------------------------------------------------
+# Cân nhắc sử dụng Git LFS cho các file này nếu cần.
+# *.csv
+# *.xlsx
+# *.pkl
+# *.joblib
+models/

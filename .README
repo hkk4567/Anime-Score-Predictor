@@ -1,0 +1,15 @@
+
+dùng để mở môi trường ảo 
+.\venv\Scripts\activate
+
+
+tắt môi trường ảo 
+deactivate
+
+pip install -r requirements.txt
+
+python -m venv venv
+
+
+chạy mô hình dự đoán
+python app_web.py

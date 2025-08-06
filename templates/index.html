@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Score Predictor - Anime Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff5722;
+            /* Vibrant Orange for action */
+            --primary-color-dark: #e64a19;
+            --secondary-color: #03a9f4;
+            /* Bright Blue for contrast */
+            --text-color: #212121;
+            --border-color: #424242;
+            --danger-color: #e53935;
+
+            /* Rating Colors */
+            --color-masterpiece: #ffc107;
+            --color-excellent: #2196F3;
+            --color-very-good: #4CAF50;
+            --color-decent: #8BC34A;
+            --color-average: #FF9800;
+            --color-underwhelming: #757575;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* ANIME STYLE: Add a scenic background */
+            background-image: url("{{ url_for('static', filename='images/anime-bg.jpg') }}");
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            /* ANIME STYLE: Manga panel look */
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 8px;
+            border: 4px solid var(--text-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 10px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(2px);
+            animation: panelIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes panelIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 800;
+            font-size: 3em;
+            margin-bottom: 40px;
+            /* ANIME STYLE: Logo with stroke */
+            color: var(--secondary-color);
+            -webkit-text-stroke: 2px var(--text-color);
+            text-shadow: 3px 3px 0 #fff;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label.group-title,
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--text-color);
+            font-size: 1.1em;
+        }
+
+        label.group-title {
+            margin-bottom: 15px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            /* ANIME STYLE: Sharper, bolder inputs */
+            border-radius: 4px;
+            border: 2px solid var(--border-color);
+            box-sizing: border-box;
+            background-color: #fff;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.5);
+        }
+
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23212121' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        /* ANIME STYLE: Action Tags for Genres */
+        .genre-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .genre-item {
+            position: relative;
+        }
+
+        .genre-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .genre-item .genre-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 0.9em;
+            background-color: #fff;
+            font-weight: 600;
+            user-select: none;
+            clip-path: polygon(0 0, 100% 0, 100% 75%, 90% 100%, 0 100%);
+        }
+
+        .genre-item .genre-label:hover {
+            transform: translateY(-3px);
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        .genre-item input[type="checkbox"]:checked+.genre-label {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 10px rgba(3, 169, 244, 0.4);
+        }
+
+        .manual-genre-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px dashed var(--border-color);
+        }
+
+        .manual-genre-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .manual-genre-item input {
+            margin-right: 12px;
+            accent-color: var(--danger-color);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .manual-genre-item label {
+            margin: 0;
+            font-weight: 700;
+            color: var(--danger-color);
+            cursor: pointer;
+        }
+
+        /* ANIME STYLE: The "Ultimate" Button */
+        button[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, var(--primary-color), #ffab00);
+            color: white;
+            border: 2px solid var(--text-color);
+            border-radius: 8px;
+            font-size: 1.4em;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            margin-top: 20px;
+            box-shadow: 0 4px 0 var(--text-color);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 var(--text-color);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--text-color);
+        }
+
+        /* ANIME STYLE: The "Explosion" Result */
+        .result-wrapper {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: resultFadeIn 0.5s 0.2s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes resultFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .result {
+            position: relative;
+            padding: 40px;
+            text-align: center;
+            background: white;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+
+        .result h2 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 700;
+            font-size: 1.5em;
+            color: var(--text-color);
+        }
+
+        .rating-badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .result-score {
+            font-size: 3.5em;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        /* Badge and Text Colors */
+        .badge-masterpiece {
+            background-color: var(--color-masterpiece);
+        }
+
+        .text-masterpiece {
+            color: var(--color-masterpiece);
+        }
+
+        .badge-excellent {
+            background-color: var(--color-excellent);
+        }
+
+        .text-excellent {
+            color: var(--color-excellent);
+        }
+
+        .badge-very-good {
+            background-color: var(--color-very-good);
+        }
+
+        .text-very-good {
+            color: var(--color-very-good);
+        }
+
+        .badge-decent {
+            background-color: var(--color-decent);
+        }
+
+        .text-decent {
+            color: var(--color-decent);
+        }
+
+        .badge-average {
+            background-color: var(--color-average);
+        }
+
+        .text-average {
+            color: var(--color-average);
+        }
+
+        .badge-underwhelming {
+            background-color: var(--color-underwhelming);
+        }
+
+        .text-underwhelming {
+            color: var(--color-underwhelming);
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .container {
+                padding: 20px;
+                border-width: 3px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3), 0 0 0 5px rgba(255, 255, 255, 0.2);
+            }
+
+            h1 {
+                font-size: 2.2em;
+                -webkit-text-stroke-width: 1.5px;
+            }
+
+            button[type="submit"] {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Anime Score Predictor</h1>
+        <form action="/predict-web" method="POST">
+            <!-- Form fields are the same -->
+            <div class="form-group">
+                <label for="studios">Studio</label>
+                <input type="text" id="studios" name="studios" value="{{ user_input.studios if user_input else '' }}"
+                    required>
+            </div>
+            <div class="form-group">
+                <label for="source">Source</label>
+                <select id="source" name="source">
+                    {% for src in all_sources %}<option value="{{ src }}" {% if user_input and user_input.source==src
+                        %}selected{% endif %}>{{ src }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="type">Type</label>
+                <select id="type" name="type">
+                    {% for t in all_types %}<option value="{{ t }}" {% if user_input and user_input.type==t %}selected{%
+                        endif %}>{{ t }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="group-title">Genres</label>
+                <div class="genre-grid">
+                    {% for genre in all_genres %}
+                    <div class="genre-item">
+                        <input type="checkbox" id="genre-{{ genre | replace(' ', '-') | lower }}" name="genres"
+                            value="{{ genre }}" {% if user_input and genre in user_input.genres %}checked{% endif %}>
+                        <label class="genre-label" for="genre-{{ genre | replace(' ', '-') | lower }}">{{ genre
+                            }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="manual-genre-section">
+                    <div class="manual-genre-item" onclick="document.getElementById('genre-other').click()">
+                        <input type="checkbox" id="genre-other" name="genre_other_checkbox" {% if user_input and
+                            user_input.genre_other_checked %}checked{% endif %} onclick="event.stopPropagation()">
+                        <label for="genre-other">Manually Include Rare/New Genre</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="episodes">Number of Episodes</label>
+                <input type="number" id="episodes" name="episodes"
+                    value="{{ user_input.episodes if user_input else 12 }}" min="1">
+            </div>
+            <div class="form-group">
+                <label for="duration_per_episode_sec">Duration per Episode (seconds)</label>
+                <input type="number" id="duration_per_episode_sec" name="duration_per_episode_sec"
+                    value="{{ user_input.duration_per_episode_sec if user_input else 1440 }}" min="60">
+            </div>
+            <button type="submit">Predict!</button>
+        </form>
+
+        {% if prediction %}
+        {% set rating_info = namespace(text='', badge_class='', text_class='') %}
+        {% if prediction >= 9.0 %}{% set rating_info.text = 'Masterpiece' %}{% set rating_info.badge_class =
+        'badge-masterpiece' %}{% set rating_info.text_class = 'text-masterpiece' %}
+        {% elif prediction >= 8.0 %}{% set rating_info.text = 'Excellent' %}{% set rating_info.badge_class =
+        'badge-excellent' %}{% set rating_info.text_class = 'text-excellent' %}
+        {% elif prediction >= 7.0 %}{% set rating_info.text = 'Very Good' %}{% set rating_info.badge_class =
+        'badge-very-good' %}{% set rating_info.text_class = 'text-very-good' %}
+        {% elif prediction >= 6.5 %}{% set rating_info.text = 'Decent' %}{% set rating_info.badge_class = 'badge-decent'
+        %}{% set rating_info.text_class = 'text-decent' %}
+        {% elif prediction >= 5.5 %}{% set rating_info.text = 'Average' %}{% set rating_info.badge_class =
+        'badge-average' %}{% set rating_info.text_class = 'text-average' %}
+        {% else %}{% set rating_info.text = 'Underwhelming' %}{% set rating_info.badge_class = 'badge-underwhelming'
+        %}{% set rating_info.text_class = 'text-underwhelming' %}
+        {% endif %}
+
+        <div class="result-wrapper">
+            <div class="result">
+                <h2>Rating</h2>
+                <div class="rating-badge {{ rating_info.badge_class }}">
+                    {{ rating_info.text }}
+                </div>
+                <div class="result-score {{ rating_info.text_class }}">
+                    {{ "%.2f"|format(prediction) }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</body>
+
+</html>

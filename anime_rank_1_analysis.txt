@@ -1,0 +1,37 @@
+==================== BÁO CÁO PHÂN TÍCH ANIME HẠNG 1 ====================
+
+--- Phân tích cho Anime Hạng 1: 'Fullmetal Alchemist: Brotherhood' ---
+
+  - Thể loại (Genre): Action, Military, Adventure, Comedy, Drama, Magic, Fantasy, Shounen
+  - Nguồn gốc (Source): Manga
+  - Độ phổ biến (Popularity Rank): #4
+  - Tổng số đánh giá trong dataset: 67,133
+----------------------------------------
+  Thống kê từ TOÀN BỘ người dùng trong dataset:
+  - Điểm trung bình (Mean my_score): 6.84
+  - Số lượng đánh giá của Nam: 47,806
+  - Số lượng đánh giá của Nữ: 18,937
+    >> Tỷ lệ Nam / Nữ: 71.6% / 28.4%
+  - Số lượng đánh giá (giới tính khác/không xác định): 390
+
+==================== SO SÁNH VỚI KẾT LUẬN THỐNG KÊ ====================
+
+1. Về Giới tính (Gender):
+   >> Nhận xét: Anime này được đánh giá bởi Nam giới nhiều hơn. Điều này phù hợp với kết luận chung rằng Nam giới
+      có xu hướng hoạt động và chấm điểm nhiều hơn.
+
+      Đồng thời, phân tích tương tác cho thấy Nam giới có xu hướng đánh giá các thể loại chính của bộ anime này
+      (như Action, Adventure, Drama, Shounen) cao hơn Nữ giới. Do đó, việc Nam giới chiếm đa số người đánh giá
+      có thể là một yếu tố quan trọng góp phần vào điểm số trung bình rất cao của anime này.
+
+2. Về Điểm số (Score) và Độ phổ biến (Popularity):
+   >> Nhận xét: Điểm trung bình (6.84) là rất cao, tương xứng với một anime hạng nhất. Phân tích thống kê
+      (cả yếu tố chính và tương tác) đã chỉ ra mối liên hệ mạnh mẽ và tích cực giữa độ phổ biến và điểm số.
+      Trường hợp cụ thể này đã xác thực một cách hoàn hảo cho kết luận đó.
+
+3. Về Nguồn gốc (Source) và Thể loại (Genre):
+   >> Nhận xét: Anime này có nguồn gốc từ 'Manga' và thuộc các thể loại chính như Action, Adventure, Drama, Fantasy, Shounen.
+      Các kết quả từ phân tích tương tác (ví dụ: 'C(genre):C(source)', 'C(genre):C(gender)') cho thấy rằng
+      sự kết hợp giữa nguồn gốc 'Manga' với các thể loại kể trên chính là một trong những công thức được đánh giá
+      cao nhất, đặc biệt là bởi nhóm khán giả Nam giới. Điều này hoàn toàn khớp với những gì chúng ta quan sát được
+      ở anime hạng 1, cho thấy các quy luật thống kê đã phản ánh đúng thực tế.
