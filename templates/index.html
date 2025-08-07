@@ -4,35 +4,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Score Predictor - Anime Edition</title>
+    <title>Shield Hero's Score Oracle</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --primary-color: #ff5722;
-            /* Vibrant Orange for action */
-            --primary-color-dark: #e64a19;
-            --secondary-color: #03a9f4;
-            /* Bright Blue for contrast */
-            --text-color: #212121;
-            --border-color: #424242;
-            --danger-color: #e53935;
+            /* TATE NO YUUSHA THEME: Color Palette */
+            --shield-green: #2E7D32;
+            /* Naofumi's Shield Color */
+            --shield-green-light: #4CAF50;
+            --rage-accent: #D84315;
+            /* Rage Shield's Fire */
+            --rage-accent-dark: #BF360C;
+            --armor-silver: #BDBDBD;
+            --ui-text: #E0E0E0;
+            --ui-bg: rgba(10, 20, 15, 0.92);
+            --ui-border: rgba(46, 125, 50, 0.7);
+            --dark-bg: #121212;
 
-            /* Rating Colors */
+            /* Rating Colors - Adjusted for the theme */
             --color-masterpiece: #ffc107;
             --color-excellent: #2196F3;
             --color-very-good: #4CAF50;
             --color-decent: #8BC34A;
             --color-average: #FF9800;
-            --color-underwhelming: #757575;
+            --color-underwhelming: #9E9E9E;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            /* ANIME STYLE: Add a scenic background */
-            background-image: url("{{ url_for('static', filename='images/anime-bg.jpg') }}");
+            /* TATE NO YUUSHA THEME: A fitting background */
+            background-image: url("{{ url_for('static', filename='images/tate-no-yuusha-bg.jpg') }}");
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
@@ -40,26 +44,32 @@
             padding: 40px 20px;
             min-height: 100vh;
             box-sizing: border-box;
-            color: var(--text-color);
+            color: var(--ui-text);
+            background-color: var(--dark-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .container {
-            max-width: 800px;
+            width: 100%;
+            max-width: 850px;
             margin: auto;
-            /* ANIME STYLE: Manga panel look */
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 8px;
-            border: 4px solid var(--text-color);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 10px rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(2px);
+            /* TATE NO YUUSHA THEME: The Legendary Shield Container */
+            background: var(--ui-bg);
+            padding: 50px 60px;
+            border: 3px solid var(--ui-border);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 25px 5px rgba(46, 125, 50, 0.4), inset 0 0 15px rgba(46, 125, 50, 0.5);
             animation: panelIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            /* SHIELD SHAPE using clip-path */
+            border-radius: 20px;
         }
 
         @keyframes panelIn {
             from {
                 opacity: 0;
-                transform: translateY(30px) scale(0.98);
+                transform: translateY(30px) scale(0.95);
             }
 
             to {
@@ -71,13 +81,13 @@
         h1 {
             text-align: center;
             font-weight: 800;
-            font-size: 3em;
+            font-size: 2.8em;
             margin-bottom: 40px;
-            /* ANIME STYLE: Logo with stroke */
-            color: var(--secondary-color);
-            -webkit-text-stroke: 2px var(--text-color);
-            text-shadow: 3px 3px 0 #fff;
-            letter-spacing: 1px;
+            /* TATE NO YUUSHA THEME: Title Style */
+            color: var(--shield-green-light);
+            text-shadow: 0 0 10px var(--shield-green), 0 0 20px var(--shield-green), 2px 2px 2px #000;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .form-group {
@@ -89,12 +99,9 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 700;
-            color: var(--text-color);
+            color: var(--shield-green-light);
             font-size: 1.1em;
-        }
-
-        label.group-title {
-            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px #000;
         }
 
         input[type="text"],
@@ -102,11 +109,12 @@
         select {
             width: 100%;
             padding: 12px 15px;
-            /* ANIME STYLE: Sharper, bolder inputs */
+            /* TATE NO YUUSHA THEME: Game UI Input Fields */
             border-radius: 4px;
-            border: 2px solid var(--border-color);
+            border: 2px solid var(--ui-border);
             box-sizing: border-box;
-            background-color: #fff;
+            background-color: rgba(0, 0, 0, 0.4);
+            color: var(--ui-text);
             font-family: 'Poppins', sans-serif;
             font-size: 1em;
             transition: all 0.2s ease;
@@ -116,26 +124,25 @@
         input[type="number"]:focus,
         select:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(255, 87, 34, 0.5);
+            border-color: var(--rage-accent);
+            box-shadow: 0 0 10px rgba(216, 67, 21, 0.7);
         }
 
         select {
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23212121' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234CAF50' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 1rem center;
             background-size: 1em;
         }
 
-        /* ANIME STYLE: Action Tags for Genres */
+        /* TATE NO YUUSHA THEME: Skill/Genre Tags */
         .genre-grid {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .genre-item {
@@ -150,39 +157,38 @@
         }
 
         .genre-item .genre-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 20px;
-            border: 2px solid var(--border-color);
+            display: inline-block;
+            padding: 8px 16px;
+            border: 2px solid var(--armor-silver);
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
             font-size: 0.9em;
-            background-color: #fff;
+            background-color: transparent;
+            color: var(--armor-silver);
             font-weight: 600;
             user-select: none;
-            clip-path: polygon(0 0, 100% 0, 100% 75%, 90% 100%, 0 100%);
         }
 
         .genre-item .genre-label:hover {
-            transform: translateY(-3px);
-            border-color: var(--secondary-color);
-            color: var(--secondary-color);
+            transform: translateY(-2px);
+            border-color: var(--shield-green-light);
+            color: var(--shield-green-light);
         }
 
         .genre-item input[type="checkbox"]:checked+.genre-label {
-            background: var(--secondary-color);
-            border-color: var(--secondary-color);
+            background: var(--shield-green);
+            border-color: var(--shield-green-light);
             color: white;
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 5px 10px rgba(3, 169, 244, 0.4);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
         }
 
         .manual-genre-section {
             margin-top: 25px;
             padding-top: 20px;
-            border-top: 2px dashed var(--border-color);
+            border-top: 2px dashed var(--ui-border);
+            color: var(--rage-accent);
         }
 
         .manual-genre-item {
@@ -193,7 +199,7 @@
 
         .manual-genre-item input {
             margin-right: 12px;
-            accent-color: var(--danger-color);
+            accent-color: var(--rage-accent);
             width: 18px;
             height: 18px;
             cursor: pointer;
@@ -202,17 +208,31 @@
         .manual-genre-item label {
             margin: 0;
             font-weight: 700;
-            color: var(--danger-color);
+            color: var(--rage-accent);
             cursor: pointer;
         }
 
-        /* ANIME STYLE: The "Ultimate" Button */
+        /* TATE NO YUUSHA THEME: The Rage Shield Button */
+        @keyframes rage-glow {
+            0% {
+                box-shadow: 0 0 5px #BF360C, 0 0 10px #D84315, inset 0 0 5px #BF360C;
+            }
+
+            50% {
+                box-shadow: 0 0 15px #BF360C, 0 0 25px #D84315, inset 0 0 10px #BF360C;
+            }
+
+            100% {
+                box-shadow: 0 0 5px #BF360C, 0 0 10px #D84315, inset 0 0 5px #BF360C;
+            }
+        }
+
         button[type="submit"] {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(45deg, var(--primary-color), #ffab00);
+            background: linear-gradient(45deg, var(--rage-accent-dark), var(--rage-accent));
             color: white;
-            border: 2px solid var(--text-color);
+            border: 2px solid var(--rage-accent-dark);
             border-radius: 8px;
             font-size: 1.4em;
             font-weight: 800;
@@ -221,20 +241,20 @@
             cursor: pointer;
             transition: all 0.2s ease-out;
             margin-top: 20px;
-            box-shadow: 0 4px 0 var(--text-color);
+            text-shadow: 1px 1px 2px #000;
         }
 
         button[type="submit"]:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 0 var(--text-color);
+            transform: translateY(-3px);
+            animation: rage-glow 1.5s ease-in-out infinite;
         }
 
         button[type="submit"]:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 var(--text-color);
+            transform: translateY(1px);
+            background: var(--rage-accent-dark);
         }
 
-        /* ANIME STYLE: The "Explosion" Result */
+        /* TATE NO YUUSHA THEME: The Result "Gem" */
         .result-wrapper {
             margin-top: 40px;
             display: flex;
@@ -258,16 +278,19 @@
 
         .result {
             position: relative;
-            padding: 40px;
+            padding: 30px;
             text-align: center;
-            background: white;
-            width: 300px;
-            height: 300px;
+            width: 280px;
+            height: 280px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            /* TATE NO YUUSHA THEME: The Shield's Gem */
+            background: radial-gradient(circle, var(--shield-green-light) 0%, var(--shield-green) 100%);
+            border-radius: 50%;
+            border: 5px solid var(--armor-silver);
+            box-shadow: 0 0 15px 5px rgba(76, 175, 80, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
         .result h2 {
@@ -275,7 +298,8 @@
             margin-bottom: 10px;
             font-weight: 700;
             font-size: 1.5em;
-            color: var(--text-color);
+            color: #fff;
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.7);
         }
 
         .rating-badge {
@@ -287,81 +311,75 @@
             font-size: 1.1em;
             text-transform: uppercase;
             margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .result-score {
             font-size: 3.5em;
             font-weight: 800;
             line-height: 1.1;
+            color: #fff;
+            text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.8);
         }
 
         /* Badge and Text Colors */
-        .badge-masterpiece {
+        .badge-masterpiece,
+        .text-masterpiece {
             background-color: var(--color-masterpiece);
         }
 
-        .text-masterpiece {
-            color: var(--color-masterpiece);
-        }
-
-        .badge-excellent {
+        .badge-excellent,
+        .text-excellent {
             background-color: var(--color-excellent);
         }
 
-        .text-excellent {
-            color: var(--color-excellent);
-        }
-
-        .badge-very-good {
+        .badge-very-good,
+        .text-very-good {
             background-color: var(--color-very-good);
         }
 
-        .text-very-good {
-            color: var(--color-very-good);
-        }
-
-        .badge-decent {
+        .badge-decent,
+        .text-decent {
             background-color: var(--color-decent);
         }
 
-        .text-decent {
-            color: var(--color-decent);
-        }
-
-        .badge-average {
+        .badge-average,
+        .text-average {
             background-color: var(--color-average);
         }
 
-        .text-average {
-            color: var(--color-average);
-        }
-
-        .badge-underwhelming {
+        .badge-underwhelming,
+        .text-underwhelming {
             background-color: var(--color-underwhelming);
         }
 
-        .text-underwhelming {
-            color: var(--color-underwhelming);
+        /* Override text color for result gem */
+        .result-score.text-masterpiece,
+        .result-score.text-excellent,
+        .result-score.text-very-good,
+        .result-score.text-decent,
+        .result-score.text-average,
+        .result-score.text-underwhelming {
+            color: white;
         }
+
 
         @media (max-width: 600px) {
             body {
-                padding: 20px 10px;
+                padding: 10px;
+                display: block;
+                /* Fallback for better scrolling on mobile */
             }
 
             .container {
-                padding: 20px;
-                border-width: 3px;
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3), 0 0 0 5px rgba(255, 255, 255, 0.2);
+                padding: 30px 20px;
+                clip-path: none;
+                /* simpler shape for small screens */
+                border-radius: 12px;
             }
 
             h1 {
-                font-size: 2.2em;
-                -webkit-text-stroke-width: 1.5px;
-            }
-
-            button[type="submit"] {
-                font-size: 1.2em;
+                font-size: 2em;
             }
         }
     </style>
@@ -369,30 +387,30 @@
 
 <body>
     <div class="container">
-        <h1>Anime Score Predictor</h1>
+        <h1>Shield Hero's Score Oracle</h1>
         <form action="/predict-web" method="POST">
             <!-- Form fields are the same -->
             <div class="form-group">
-                <label for="studios">Studio</label>
+                <label for="studios">Studio (Phòng thu)</label>
                 <input type="text" id="studios" name="studios" value="{{ user_input.studios if user_input else '' }}"
                     required>
             </div>
             <div class="form-group">
-                <label for="source">Source</label>
+                <label for="source">Source (Nguồn tác phẩm)</label>
                 <select id="source" name="source">
                     {% for src in all_sources %}<option value="{{ src }}" {% if user_input and user_input.source==src
                         %}selected{% endif %}>{{ src }}</option>{% endfor %}
                 </select>
             </div>
             <div class="form-group">
-                <label for="type">Type</label>
+                <label for="type">Type (Loại)</label>
                 <select id="type" name="type">
                     {% for t in all_types %}<option value="{{ t }}" {% if user_input and user_input.type==t %}selected{%
                         endif %}>{{ t }}</option>{% endfor %}
                 </select>
             </div>
             <div class="form-group">
-                <label class="group-title">Genres</label>
+                <label class="group-title">Genres (Thể loại)</label>
                 <div class="genre-grid">
                     {% for genre in all_genres %}
                     <div class="genre-item">
@@ -407,21 +425,21 @@
                     <div class="manual-genre-item" onclick="document.getElementById('genre-other').click()">
                         <input type="checkbox" id="genre-other" name="genre_other_checkbox" {% if user_input and
                             user_input.genre_other_checked %}checked{% endif %} onclick="event.stopPropagation()">
-                        <label for="genre-other">Manually Include Rare/New Genre</label>
+                        <label for="genre-other">Thêm thể loại hiếm/mới (Thủ công)</label>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <label for="episodes">Number of Episodes</label>
+                <label for="episodes">Number of Episodes (Số tập)</label>
                 <input type="number" id="episodes" name="episodes"
                     value="{{ user_input.episodes if user_input else 12 }}" min="1">
             </div>
             <div class="form-group">
-                <label for="duration_per_episode_sec">Duration per Episode (seconds)</label>
+                <label for="duration_per_episode_sec">Duration per Episode (Thời lượng mỗi tập - giây)</label>
                 <input type="number" id="duration_per_episode_sec" name="duration_per_episode_sec"
                     value="{{ user_input.duration_per_episode_sec if user_input else 1440 }}" min="60">
             </div>
-            <button type="submit">Predict!</button>
+            <button type="submit">Activate & Predict!</button>
         </form>
 
         {% if prediction %}
