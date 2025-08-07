@@ -130,7 +130,7 @@ def predict_web():
         
         # Gọi hàm dự đoán
         predicted_score = get_prediction(form_data)
-        
+        logging.info(f"Dự đoán thành công cho API! Điểm số: {predicted_score:.2f}")
         # Trả về trang web với kết quả
         return render_template('index.html', 
                                prediction=predicted_score,

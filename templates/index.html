@@ -4,104 +4,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shield Hero's Score Oracle</title>
+    <title>Score Oracle / a futuristic predictor</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            /* TATE NO YUUSHA THEME: Color Palette */
-            --shield-green: #2E7D32;
-            /* Naofumi's Shield Color */
-            --shield-green-light: #4CAF50;
-            --rage-accent: #D84315;
-            /* Rage Shield's Fire */
-            --rage-accent-dark: #BF360C;
-            --armor-silver: #BDBDBD;
-            --ui-text: #E0E0E0;
-            --ui-bg: rgba(10, 20, 15, 0.92);
-            --ui-border: rgba(46, 125, 50, 0.7);
-            --dark-bg: #121212;
+            /* MODERN/CYBERPUNK THEME: Color Palette */
+            --bg-dark: #0d0f18;
+            --primary-glow: #00e5ff;
+            --secondary-glow: #ff00c1;
+            --glass-bg: rgba(18, 16, 32, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-primary: #f0f0f0;
+            --text-secondary: #a0a0b0;
 
-            /* Rating Colors - Adjusted for the theme */
+            /* Rating Colors */
             --color-masterpiece: #ffc107;
-            --color-excellent: #2196F3;
+            --color-excellent: #00e5ff;
             --color-very-good: #4CAF50;
             --color-decent: #8BC34A;
             --color-average: #FF9800;
             --color-underwhelming: #9E9E9E;
         }
 
+        /* --- Aurora Background Animation --- */
+        @keyframes aurora {
+            from {
+                background-position: 50% 0%, 50% 0%;
+            }
+
+            to {
+                background-position: 350% 0%, 350% 0%;
+            }
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            /* TATE NO YUUSHA THEME: A fitting background */
-            background-image: url("{{ url_for('static', filename='images/tate-no-yuusha-bg.jpg') }}");
-            background-size: cover;
-            background-position: center center;
-            background-attachment: fixed;
             margin: 0;
             padding: 40px 20px;
             min-height: 100vh;
             box-sizing: border-box;
-            color: var(--ui-text);
-            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            background-color: var(--bg-dark);
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(at 20% 100%, var(--primary-glow) 0px, transparent 50%),
+                radial-gradient(at 80% 0%, var(--secondary-glow) 0px, transparent 50%);
+            background-repeat: no-repeat;
+            background-size: 200% 200%;
+            animation: aurora 15s cubic-bezier(0.6, 0.6, 0.4, 0.4) alternate infinite;
         }
 
-        .container {
+        /* --- 3D Flipper Structure --- */
+        .flipper-container {
             width: 100%;
             max-width: 850px;
-            margin: auto;
-            /* TATE NO YUUSHA THEME: The Legendary Shield Container */
-            background: var(--ui-bg);
-            padding: 50px 60px;
-            border: 3px solid var(--ui-border);
-            backdrop-filter: blur(4px);
-            box-shadow: 0 0 25px 5px rgba(46, 125, 50, 0.4), inset 0 0 15px rgba(46, 125, 50, 0.5);
-            animation: panelIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-            /* SHIELD SHAPE using clip-path */
-            border-radius: 20px;
+            perspective: 2000px;
+            animation: slideInUp 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            opacity: 0;
         }
 
-        @keyframes panelIn {
+        @keyframes slideInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px) scale(0.95);
+                transform: translateY(50px);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0);
             }
         }
 
-        h1 {
+        .flipper {
+            position: relative;
+            width: 100%;
+            /* CRITICAL FIX: Height will be set by JavaScript */
+            transition: transform 1s cubic-bezier(0.76, 0, 0.24, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flipper.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+
+            background: var(--glass-bg);
+            padding: 50px 60px;
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            box-sizing: border-box;
+        }
+
+        .card-face--front {
+            /* Position relative so we can measure its natural height */
+            position: relative;
+            transform: rotateY(0deg);
+        }
+
+        .card-face--back {
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* --- Shared Form/Result Styles --- */
+        h1,
+        .result-title {
             text-align: center;
             font-weight: 800;
             font-size: 2.8em;
+            margin-top: 0;
             margin-bottom: 40px;
-            /* TATE NO YUUSHA THEME: Title Style */
-            color: var(--shield-green-light);
-            text-shadow: 0 0 10px var(--shield-green), 0 0 20px var(--shield-green), 2px 2px 2px #000;
             letter-spacing: 2px;
             text-transform: uppercase;
+            background: linear-gradient(90deg, var(--primary-glow), var(--text-primary), var(--secondary-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px var(--primary-glow);
+            }
+
+            to {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px var(--secondary-glow);
+            }
         }
 
         .form-group {
             margin-bottom: 25px;
         }
 
-        label.group-title,
         label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 700;
-            color: var(--shield-green-light);
+            font-weight: 600;
+            color: var(--text-secondary);
             font-size: 1.1em;
-            text-shadow: 1px 1px 2px #000;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         input[type="text"],
@@ -109,40 +171,35 @@
         select {
             width: 100%;
             padding: 12px 15px;
-            /* TATE NO YUUSHA THEME: Game UI Input Fields */
-            border-radius: 4px;
-            border: 2px solid var(--ui-border);
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
             box-sizing: border-box;
-            background-color: rgba(0, 0, 0, 0.4);
-            color: var(--ui-text);
+            background-color: rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
             font-family: 'Poppins', sans-serif;
             font-size: 1em;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
-        input[type="text"]:focus,
-        input[type="number"]:focus,
+        input:focus,
         select:focus {
             outline: none;
-            border-color: var(--rage-accent);
-            box-shadow: 0 0 10px rgba(216, 67, 21, 0.7);
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
         }
 
         select {
             -webkit-appearance: none;
-            -moz-appearance: none;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234CAF50' class='bi bi-caret-down-fill' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2300e5ff' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 1rem center;
-            background-size: 1em;
         }
 
-        /* TATE NO YUUSHA THEME: Skill/Genre Tags */
         .genre-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
         }
 
         .genre-item {
@@ -152,43 +209,51 @@
         .genre-item input[type="checkbox"] {
             position: absolute;
             opacity: 0;
-            width: 0;
-            height: 0;
         }
 
         .genre-item .genre-label {
             display: inline-block;
-            padding: 8px 16px;
-            border: 2px solid var(--armor-silver);
-            border-radius: 4px;
+            padding: 8px 18px;
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
             cursor: pointer;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.3s ease;
             font-size: 0.9em;
-            background-color: transparent;
-            color: var(--armor-silver);
-            font-weight: 600;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-secondary);
+            font-weight: 500;
             user-select: none;
+            position: relative;
+            overflow: hidden;
         }
 
-        .genre-item .genre-label:hover {
-            transform: translateY(-2px);
-            border-color: var(--shield-green-light);
-            color: var(--shield-green-light);
+        .genre-item .genre-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-glow), var(--secondary-glow));
+            transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: -1;
         }
 
         .genre-item input[type="checkbox"]:checked+.genre-label {
-            background: var(--shield-green);
-            border-color: var(--shield-green-light);
-            color: white;
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+            color: #fff;
+            border-color: var(--primary-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 229, 255, 0.2);
+        }
+
+        .genre-item input[type="checkbox"]:checked+.genre-label::before {
+            width: 100%;
         }
 
         .manual-genre-section {
             margin-top: 25px;
             padding-top: 20px;
-            border-top: 2px dashed var(--ui-border);
-            color: var(--rage-accent);
+            border-top: 1px dashed var(--glass-border);
         }
 
         .manual-genre-item {
@@ -199,186 +264,152 @@
 
         .manual-genre-item input {
             margin-right: 12px;
-            accent-color: var(--rage-accent);
+            accent-color: var(--primary-glow);
             width: 18px;
             height: 18px;
             cursor: pointer;
         }
 
         .manual-genre-item label {
-            margin: 0;
-            font-weight: 700;
-            color: var(--rage-accent);
+            color: var(--text-secondary);
             cursor: pointer;
+            margin: 0;
         }
 
-        /* TATE NO YUUSHA THEME: The Rage Shield Button */
-        @keyframes rage-glow {
-            0% {
-                box-shadow: 0 0 5px #BF360C, 0 0 10px #D84315, inset 0 0 5px #BF360C;
-            }
-
-            50% {
-                box-shadow: 0 0 15px #BF360C, 0 0 25px #D84315, inset 0 0 10px #BF360C;
-            }
-
-            100% {
-                box-shadow: 0 0 5px #BF360C, 0 0 10px #D84315, inset 0 0 5px #BF360C;
-            }
-        }
-
-        button[type="submit"] {
+        button {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(45deg, var(--rage-accent-dark), var(--rage-accent));
             color: white;
-            border: 2px solid var(--rage-accent-dark);
+            border: none;
             border-radius: 8px;
             font-size: 1.4em;
-            font-weight: 800;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
             cursor: pointer;
-            transition: all 0.2s ease-out;
+            transition: all 0.4s ease-out;
             margin-top: 20px;
             text-shadow: 1px 1px 2px #000;
         }
 
-        button[type="submit"]:hover {
+        button#predict-button {
+            background: linear-gradient(90deg, var(--primary-glow) 0%, var(--secondary-glow) 50%, var(--primary-glow) 100%);
+            background-size: 200% 100%;
+        }
+
+        button#predict-button:hover {
             transform: translateY(-3px);
-            animation: rage-glow 1.5s ease-in-out infinite;
+            box-shadow: 0 10px 25px rgba(0, 229, 255, 0.4);
+            animation: shimmer 2s infinite;
         }
 
-        button[type="submit"]:active {
-            transform: translateY(1px);
-            background: var(--rage-accent-dark);
-        }
-
-        /* TATE NO YUUSHA THEME: The Result "Gem" */
-        .result-wrapper {
+        button.predict-again-button {
+            background: transparent;
+            border: 2px solid var(--primary-glow);
             margin-top: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: resultFadeIn 0.5s 0.2s ease-out forwards;
-            opacity: 0;
         }
 
-        @keyframes resultFadeIn {
+        button.predict-again-button:hover {
+            background: var(--primary-glow);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+
+        @keyframes shimmer {
             from {
-                opacity: 0;
-                transform: scale(0.8);
+                background-position: 200% 0;
             }
 
             to {
-                opacity: 1;
-                transform: scale(1);
+                background-position: -200% 0;
             }
         }
 
-        .result {
-            position: relative;
-            padding: 30px;
-            text-align: center;
-            width: 280px;
-            height: 280px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            /* TATE NO YUUSHA THEME: The Shield's Gem */
-            background: radial-gradient(circle, var(--shield-green-light) 0%, var(--shield-green) 100%);
-            border-radius: 50%;
-            border: 5px solid var(--armor-silver);
-            box-shadow: 0 0 15px 5px rgba(76, 175, 80, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.3);
-        }
-
-        .result h2 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-weight: 700;
-            font-size: 1.5em;
-            color: #fff;
-            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.7);
+        /* --- Result Card Styles (Back Face) --- */
+        .result-title {
+            font-size: 1.8em;
+            margin: 0 0 15px 0;
         }
 
         .rating-badge {
-            display: inline-block;
             padding: 6px 20px;
-            border-radius: 4px;
+            border-radius: 30px;
             color: white;
             font-weight: 700;
             font-size: 1.1em;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .result-score {
-            font-size: 3.5em;
+            font-size: 4.5em;
             font-weight: 800;
-            line-height: 1.1;
-            color: #fff;
-            text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.8);
+            line-height: 1;
         }
 
-        /* Badge and Text Colors */
-        .badge-masterpiece,
-        .text-masterpiece {
+        .badge-masterpiece {
             background-color: var(--color-masterpiece);
         }
 
-        .badge-excellent,
-        .text-excellent {
+        .text-masterpiece {
+            color: var(--color-masterpiece);
+        }
+
+        .badge-excellent {
             background-color: var(--color-excellent);
         }
 
-        .badge-very-good,
-        .text-very-good {
+        .text-excellent {
+            color: var(--color-excellent);
+        }
+
+        .badge-very-good {
             background-color: var(--color-very-good);
         }
 
-        .badge-decent,
-        .text-decent {
+        .text-very-good {
+            color: var(--color-very-good);
+        }
+
+        .badge-decent {
             background-color: var(--color-decent);
         }
 
-        .badge-average,
-        .text-average {
+        .text-decent {
+            color: var(--color-decent);
+        }
+
+        .badge-average {
             background-color: var(--color-average);
         }
 
-        .badge-underwhelming,
-        .text-underwhelming {
+        .text-average {
+            color: var(--color-average);
+        }
+
+        .badge-underwhelming {
             background-color: var(--color-underwhelming);
         }
 
-        /* Override text color for result gem */
-        .result-score.text-masterpiece,
-        .result-score.text-excellent,
-        .result-score.text-very-good,
-        .result-score.text-decent,
-        .result-score.text-average,
-        .result-score.text-underwhelming {
-            color: white;
+        .text-underwhelming {
+            color: var(--color-underwhelming);
         }
-
 
         @media (max-width: 600px) {
             body {
-                padding: 10px;
+                padding: 15px;
                 display: block;
-                /* Fallback for better scrolling on mobile */
+                animation: none;
+                background-size: 400% 400%;
             }
 
-            .container {
+            .card-face {
                 padding: 30px 20px;
-                clip-path: none;
-                /* simpler shape for small screens */
-                border-radius: 12px;
             }
 
-            h1 {
+            h1,
+            .result-title {
                 font-size: 2em;
             }
         }
@@ -386,92 +417,178 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>Shield Hero's Score Oracle</h1>
-        <form action="/predict-web" method="POST">
-            <!-- Form fields are the same -->
-            <div class="form-group">
-                <label for="studios">Studio (Phòng thu)</label>
-                <input type="text" id="studios" name="studios" value="{{ user_input.studios if user_input else '' }}"
-                    required>
-            </div>
-            <div class="form-group">
-                <label for="source">Source (Nguồn tác phẩm)</label>
-                <select id="source" name="source">
-                    {% for src in all_sources %}<option value="{{ src }}" {% if user_input and user_input.source==src
-                        %}selected{% endif %}>{{ src }}</option>{% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="type">Type (Loại)</label>
-                <select id="type" name="type">
-                    {% for t in all_types %}<option value="{{ t }}" {% if user_input and user_input.type==t %}selected{%
-                        endif %}>{{ t }}</option>{% endfor %}
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="group-title">Genres (Thể loại)</label>
-                <div class="genre-grid">
-                    {% for genre in all_genres %}
-                    <div class="genre-item">
-                        <input type="checkbox" id="genre-{{ genre | replace(' ', '-') | lower }}" name="genres"
-                            value="{{ genre }}" {% if user_input and genre in user_input.genres %}checked{% endif %}>
-                        <label class="genre-label" for="genre-{{ genre | replace(' ', '-') | lower }}">{{ genre
-                            }}</label>
+    <div class="flipper-container">
+        <div class="flipper" id="flipper">
+            <!-- ========== FRONT FACE: THE FORM ========== -->
+            <div class="card-face card-face--front" id="form-face">
+                <form id="prediction-form">
+                    <h1>Score Oracle</h1>
+                    <div class="form-group">
+                        <label for="studios">Studio (Phòng thu)</label>
+                        <input type="text" id="studios" name="studios" required>
                     </div>
-                    {% endfor %}
-                </div>
-                <div class="manual-genre-section">
-                    <div class="manual-genre-item" onclick="document.getElementById('genre-other').click()">
-                        <input type="checkbox" id="genre-other" name="genre_other_checkbox" {% if user_input and
-                            user_input.genre_other_checked %}checked{% endif %} onclick="event.stopPropagation()">
-                        <label for="genre-other">Thêm thể loại hiếm/mới (Thủ công)</label>
+                    <div class="form-group">
+                        <label for="source">Source (Nguồn tác phẩm)</label>
+                        <select id="source" name="source">
+                            {% for src in all_sources %}<option value="{{ src }}">{{ src }}</option>{% endfor %}
+                        </select>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="type">Type (Loại)</label>
+                        <select id="type" name="type">
+                            {% for t in all_types %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="group-title">Genres (Thể loại)</label>
+                        <div class="genre-grid">
+                            {% for genre in all_genres %}
+                            <div class="genre-item">
+                                <input type="checkbox" id="genre-{{ genre | replace(' ', '-') | lower }}" name="genres"
+                                    value="{{ genre }}">
+                                <label class="genre-label" for="genre-{{ genre | replace(' ', '-') | lower }}">{{ genre
+                                    }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="manual-genre-section">
+                            <div class="manual-genre-item" onclick="document.getElementById('genre-other').click()">
+                                <input type="checkbox" id="genre-other" name="genre_other_checkbox"
+                                    onclick="event.stopPropagation()">
+                                <label for="genre_other_checkbox" style="user-select: none;">
+                                    Thêm thể loại hiếm/mới (Thủ công)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="episodes">Number of Episodes (Số tập)</label>
+                        <input type="number" id="episodes" name="episodes" value="12" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="duration_per_episode_sec">Duration per Episode (Thời lượng mỗi tập - giây)</label>
+                        <input type="number" id="duration_per_episode_sec" name="duration_per_episode_sec" value="1440"
+                            min="60">
+                    </div>
+                    <button type="submit" id="predict-button">Predict Score</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="episodes">Number of Episodes (Số tập)</label>
-                <input type="number" id="episodes" name="episodes"
-                    value="{{ user_input.episodes if user_input else 12 }}" min="1">
-            </div>
-            <div class="form-group">
-                <label for="duration_per_episode_sec">Duration per Episode (Thời lượng mỗi tập - giây)</label>
-                <input type="number" id="duration_per_episode_sec" name="duration_per_episode_sec"
-                    value="{{ user_input.duration_per_episode_sec if user_input else 1440 }}" min="60">
-            </div>
-            <button type="submit">Activate & Predict!</button>
-        </form>
 
-        {% if prediction %}
-        {% set rating_info = namespace(text='', badge_class='', text_class='') %}
-        {% if prediction >= 9.0 %}{% set rating_info.text = 'Masterpiece' %}{% set rating_info.badge_class =
-        'badge-masterpiece' %}{% set rating_info.text_class = 'text-masterpiece' %}
-        {% elif prediction >= 8.0 %}{% set rating_info.text = 'Excellent' %}{% set rating_info.badge_class =
-        'badge-excellent' %}{% set rating_info.text_class = 'text-excellent' %}
-        {% elif prediction >= 7.0 %}{% set rating_info.text = 'Very Good' %}{% set rating_info.badge_class =
-        'badge-very-good' %}{% set rating_info.text_class = 'text-very-good' %}
-        {% elif prediction >= 6.5 %}{% set rating_info.text = 'Decent' %}{% set rating_info.badge_class = 'badge-decent'
-        %}{% set rating_info.text_class = 'text-decent' %}
-        {% elif prediction >= 5.5 %}{% set rating_info.text = 'Average' %}{% set rating_info.badge_class =
-        'badge-average' %}{% set rating_info.text_class = 'text-average' %}
-        {% else %}{% set rating_info.text = 'Underwhelming' %}{% set rating_info.badge_class = 'badge-underwhelming'
-        %}{% set rating_info.text_class = 'text-underwhelming' %}
-        {% endif %}
-
-        <div class="result-wrapper">
-            <div class="result">
-                <h2>Rating</h2>
-                <div class="rating-badge {{ rating_info.badge_class }}">
-                    {{ rating_info.text }}
-                </div>
-                <div class="result-score {{ rating_info.text_class }}">
-                    {{ "%.2f"|format(prediction) }}
-                </div>
+            <!-- ========== BACK FACE: THE RESULT (initially hidden) ========== -->
+            <div class="card-face card-face--back" id="result-face">
+                <!-- Content will be injected by JavaScript -->
             </div>
         </div>
-        {% endif %}
-
     </div>
+
+    <!-- JAVASCRIPT TO HANDLE FORM SUBMISSION, API CALL, AND ANIMATIONS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const flipper = document.getElementById('flipper');
+            const formFace = document.getElementById('form-face');
+            const resultFace = document.getElementById('result-face');
+            const form = document.getElementById('prediction-form');
+            const predictButton = document.getElementById('predict-button');
+
+            // --- CRITICAL FIX: Set the height of the flipper ---
+            function setCardHeight() {
+                // Measure the natural height of the front face
+                const formHeight = formFace.offsetHeight;
+                // Apply this height to the main flipper container
+                flipper.style.height = `${formHeight}px`;
+            }
+
+            // Set initial height and update on window resize
+            setCardHeight();
+            window.addEventListener('resize', setCardHeight);
+
+            // --- Function to animate score counting ---
+            function animateScore(scoreElement, targetScore) {
+                const duration = 1500;
+                let start = null;
+                const animate = (timestamp) => {
+                    if (!start) start = timestamp;
+                    const progress = timestamp - start;
+                    const percentage = Math.min(progress / duration, 1);
+                    const easeOutQuad = t => t * (2 - t);
+                    const currentScore = easeOutQuad(percentage) * targetScore;
+                    scoreElement.textContent = currentScore.toFixed(2);
+                    if (progress < duration) {
+                        window.requestAnimationFrame(animate);
+                    } else {
+                        scoreElement.textContent = targetScore.toFixed(2);
+                    }
+                };
+                window.requestAnimationFrame(animate);
+            }
+
+            // --- Function to get rating details from score ---
+            function getRatingInfo(score) {
+                if (score >= 9.0) return { text: 'Masterpiece', badge_class: 'badge-masterpiece', text_class: 'text-masterpiece' };
+                if (score >= 8.0) return { text: 'Excellent', badge_class: 'badge-excellent', text_class: 'text-excellent' };
+                if (score >= 7.0) return { text: 'Very Good', badge_class: 'badge-very-good', text_class: 'text-very-good' };
+                if (score >= 6.5) return { text: 'Decent', badge_class: 'badge-decent', text_class: 'text-decent' };
+                if (score >= 5.5) return { text: 'Average', badge_class: 'badge-average', text_class: 'text-average' };
+                return { text: 'Underwhelming', badge_class: 'badge-underwhelming', text_class: 'text-underwhelming' };
+            }
+
+            // --- Handle Form Submission ---
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+                const originalButtonText = predictButton.textContent;
+                predictButton.textContent = 'Predicting...';
+                predictButton.disabled = true;
+
+                const formData = new FormData(form);
+                const data = {
+                    studios: formData.get('studios'), source: formData.get('source'),
+                    type: formData.get('type'), episodes: parseInt(formData.get('episodes'), 10),
+                    duration_per_episode_sec: parseInt(formData.get('duration_per_episode_sec'), 10),
+                    genres: formData.getAll('genres')
+                };
+                if (formData.get('genre_other_checkbox')) { data.genres.push('USER_ADDED_RARE_GENRE'); }
+
+                try {
+                    const response = await fetch('/predict-api', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                    const result = await response.json();
+                    const score = result.predicted_score;
+                    const ratingInfo = getRatingInfo(score);
+
+                    resultFace.innerHTML = `
+                        <h2 class="result-title">Predicted Rating</h2>
+                        <div class="rating-badge ${ratingInfo.badge_class}">${ratingInfo.text}</div>
+                        <div id="animated-score" class="result-score ${ratingInfo.text_class}">0.00</div>
+                        <button class="predict-again-button">Predict Again</button>
+                    `;
+
+                    setCardHeight(); // Recalculate height in case result card is different
+                    flipper.classList.add('is-flipped');
+
+                    const scoreElement = resultFace.querySelector('#animated-score');
+                    animateScore(scoreElement, score);
+
+                } catch (error) {
+                    console.error('Prediction failed:', error);
+                    alert('An error occurred during prediction. Please try again.');
+                } finally {
+                    predictButton.textContent = originalButtonText;
+                    predictButton.disabled = false;
+                }
+            });
+
+            // --- Handle "Predict Again" button click using Event Delegation ---
+            flipper.addEventListener('click', (event) => {
+                if (event.target.classList.contains('predict-again-button')) {
+                    flipper.classList.remove('is-flipped');
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
